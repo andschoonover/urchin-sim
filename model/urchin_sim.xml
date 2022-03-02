@@ -13,20 +13,25 @@
         <equality solref='0.005 1'/>
         <default class='urchin'>
             <geom material='urchin'/>
-        </default>
-        <default class='collision'/>
+	</default>
+        
 
-
-        <asset>
+	<asset>
             <texture type='skybox' builtin='gradient' width='128' height='128' rgb1='0.4 0.6 0.8' rgb2='0 0 0'?>
             <texture name='plane' type='2d' builtin='checker' rgb1='0.25 0.25 0.25' rgb2='0.5 0.5 0.5' width='512' height='512'/>
             <material name='plane' reflectance='0.0' texture='plane' texrepeat='1 1' texuniform='true'/>
             <mesh name='body' file='body_sphere.stl'/>
             <mesh name='rod_spine' file='rod_point.stl'/>
-        </asset>
+	</asset>
 
-        <worldbody>
+	<worldbody>
             <geom name='floor' pos'0.001 0 0' size='100 10 .125' type='plane' material='plane' conaffinity='15/>
             <body name='body' pos='0 0 0' childclass='urchin'>
             <inertial pos='0 0 0' mass='2.268' fullinertia='0.085821 0.049222 0.08626 1.276e-05 -0.00016022 -0.000414'/>
+	</worldbody>
 
+	<actuator>
+	
+	</actuator>
+	
+</mujoco?
