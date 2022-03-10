@@ -8,7 +8,7 @@ from gym.envs.registration import register
 class URCHINEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def __init__(
         self,
-        xml_file = "/Users/home/[Urchin]/Code/urchin_sim/urchin_sim.xml",
+        xml_file = "/Users/home/[Urchin]/Code/urchin_sim/urchin.xml",
     ):
         utils.EzPickle.__init__(**locals())
         register(id = 'URCHIN-v0', entry_point= "URCHIN_SIM.urchin:URCHINEnv")

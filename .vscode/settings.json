@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./mujoco-py/build/lib"
+    ]
+}
