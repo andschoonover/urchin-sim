@@ -8,7 +8,8 @@ env.reset()
 
 for i in range(100000):
     env.render()
-    action = np.array([])
+    action = .175*np.sin(i/150)+.175
+    print(action)
     env.step(action)
 
 env.close()

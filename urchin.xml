@@ -1,43 +1,69 @@
-<! -- Sim model to be used with MuJoCo-- > 
 <mujoco model='urchin'>
-    <compiler inertialfromgeom='auto' angle='degree' eulerseq'zyx' meshdir='meshes'/>
-    <size nuser_actuator='1' nuser_geom='1'/>
-    <option timestep='0.005' itrations='50' solver='PGS' gravity='0 0 -9.81'/>
+    <compiler inertiafromgeom='auto' angle='degree' eulerseq='zyx' meshdir='meshes'/>
+    <!-- <size nuser_geom='1'/> -->
+    <size nuser_actuator='1' nuser_sensor='1' nuser_geom='1'/>
+    <option timestep='0.01' iterations='50' solver='PGS' gravity='0 0 -9.81'/>
     <!-- Gravity will change based on the exterr. body we are sim -->
     <!--  -->
     
     <default> 
         <joint limited='true'/>
         <motor ctrllimited='true'/>
-        <geom contype=/0' conaffinity='0' condim='1' solref'0.005 1'/>
+        <geom contype='0' conaffinity='0' condim='1' solref='0.005 1'/>
         <equality solref='0.005 1'/>
         <default class='urchin'>
             <geom material='urchin'/>
+        </default>
+        
+        <default class='collision'>
+            <!-- User parameter for geoms is used to identify collision types -->
+            <geom material='collision' contype='1' user='2'/>
+        </default>
+
+
 	</default>
         
 
 	<asset>
-	    <texture type='skybox' builtin='gradient' width='128' height='128' rgb1='0.4 0.6 0.8' rgb2='0 0 0'?>
+	    <texture type='skybox' builtin='gradient' width='128' height='128' rgb1='0.4 0.6 0.8' rgb2='0 0 0'/>
         <texture name='plane' type='2d' builtin='checker' rgb1='0.25 0.25 0.25' rgb2='0.5 0.5 0.5' width='512' height='512'/>
         <material name='plane' reflectance='0.0' texture='plane' texrepeat='1 1' texuniform='true'/>
-        <mesh name='body' file='body_sphere.stl'/>
+        <material name='urchin' rgba='0.9 0.5 0.1 1'/>
+        <mesh name='body' scale='1.5 1.5 1.5' file='sphere_body.stl'/>
         <mesh name='spine' file='rod_spine_w_point.stl'/>
+        <material name='collision' rgba='0.1 0.5 0.9 0'/>
 	</asset>
 
 	<worldbody>
-		<geom name='floor' pos'0.001 0 0' size='100 10 .125' type='plane' material='plane' conaffinity='15/>
-	    <body name='body' pos='0 0 0' childclass='urchin'>
-        <camera name='track' pos='0 -3 1' zaxis='0 -1 0.5' mode='track'/>
-	    <inertial pos='0 0 0' mass='2.268' fullinertia='0.085821 0.049222 0.08626 1.276e-05 -0.00016022 -0.000414'/>
-	    <body name='spine' pos='0 0 0' xyaxes='0 0 -1 1 0'>
-	        <inertial pos='-0.01793 0.0001 -0.04428' mass='1.82' fullinertia='0.003431 0.003793 0.002135 -6.65e-07 -0.00084 3.99e-06'/>
-        	<joint name='spine' type='hinge' range='-15 22.5' damping='1' armature='0.038125'/>
-        	<geom type='mesh' mesh='spine'/>				
+		<geom name='floor' pos='0.001 0 0' size='10 10 .125' type='plane' material='plane' conaffinity='15'/>
+	    
+        <body name='body' pos='0 0 1' childclass='urchin'>
+            <camera name='track' pos='0 -3 1' zaxis='0 -1 0.5' mode='track'/>
+            <joint type='slide' axis='1 0 0' limited='false'/>
+            <joint type='slide' axis='0 1 0' limited='false'/>
+            <joint type='slide' axis='0 0 1' limited='false' ref='1.01'/>
+            <joint type='ball' limited='false'/>
+            <geom type='mesh' mesh='body'/>
+            <geom type='mesh' mesh='body' class='collision'/>
+            <site name='imu' size='0.01' pos='0 0 0'/>
+
+            <body name='spine1' pos='0 -.55 0' xyaxes='0 0 1 1 0 0'>
+                <joint name='spine1' type='slide' range='0 .35' damping='10'/>
+                <geom type='mesh' mesh='spine' class='collision'/>
+                <geom type='mesh' mesh='spine'/>				
+            </body>
         </body>
 	</worldbody>
 
-	<actuator>
-	
-	</actuator>
-	
+    <actuator>
+        <position name='spine1'  joint='spine1' kp='100' ctrlrange='-100 100'/>
+    </actuator>
+
+    <sensor>
+        <framequat     name='body-orientation' objtype='site' objname='imu'/>
+        <gyro          name='body-angular-velocity'    site='imu' noise='5e-4' cutoff='34.9'/>
+        <accelerometer name='body-linear-acceleration' site='imu' noise='1e-2' cutoff='157'/>
+        <magnetometer  name='body-magnetometer'        site='imu'/>
+    </sensor>
+
 </mujoco>
